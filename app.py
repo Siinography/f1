@@ -79,6 +79,14 @@ if f.empty:
     st.stop()
 
 # ---------- 3. Charts ----------
+# Summary metrics (update with every filter)
+pole_rows = f[f.grid == 1]
+if len(pole_rows):
+    m1, m2, m3 = st.columns(3)
+    m1.metric("Pole sitters who won", f"{(pole_rows.positionOrder == 1).mean() * 100:.0f}%")
+    m2.metric("Pole sitters who DNF'd", f"{(~pole_rows.finished).mean() * 100:.0f}%")
+    m3.metric("All entries that DNF'd", f"{(~f.finished).mean() * 100:.1f}%")
+
 c1, c2 = st.columns(2)
 
 # Chart 1: bar, wins by constructor
@@ -134,5 +142,9 @@ with c4:
     fig.update_layout(title="Where grid slots end up (Sankey)", height=450, font_size=13)
     st.plotly_chart(fig, use_container_width=True)
 
-st.caption("Data: Ergast-derived F1 results (check the license on your source). "
-           f"Showing {len(f):,} race entries.")
+st.caption(
+    "Data: Formula 1 World Championship (1950-2026) by atharvranjan on Kaggle "
+    "(Ergast-derived race data), licensed CC0: Public Domain. "
+    "Seasons after 2025 are excluded because 2026 is incomplete. "
+    f"Showing {len(f):,} driver-race entries for the current filters."
+)
